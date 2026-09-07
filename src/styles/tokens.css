@@ -1,0 +1,335 @@
+/* ==========================================================================
+   Design tokens, three tiers.
+
+   Tier 1  primitives  hold literal values. Nothing else in the codebase may
+                       hold a literal value.
+   Tier 2  semantics   name a role in the interface. They reference primitives
+                       and never hold a literal.
+   Tier 3  components  name a part of a component. They reference semantics
+                       and never hold a literal.
+
+   A tier is never skipped: a component token never reaches past the semantic
+   layer to a primitive, and no className or inline style carries a raw colour
+   or an off-ladder length.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Tier 1: primitives
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* One hue runs the whole system: OKLCH 270deg. The neutrals are that hue at
+     near-zero chroma, the accent is it at full chroma, and the stage ramp walks
+     between them. Nothing here was eyeballed: every step was generated in OKLCH
+     and validated. */
+
+  /* Paper and ink. Hue 270 at C 0.004-0.020. */
+  --grey-0: #ffffff;
+  --grey-50: #f8f9fc;
+  --grey-100: #f1f2f7;
+  --grey-200: #e4e6ec;
+  --grey-300: #c7cad3;
+  --grey-500: #6d727e;
+  --grey-700: #484b56;
+  --grey-900: #10131d;
+
+  /* Accent. The brand hue at full chroma, deliberately off the default link
+     blue. --indigo-200 is the meter track: a lighter step of the fill's own
+     ramp, never a neutral. */
+  --indigo-50: #f1f6ff;
+  --indigo-100: #e9efff;
+  --indigo-200: #e0e7fd;
+  --indigo-600: #3d55cf;
+  --indigo-700: #3144b5;
+
+  /* Stage ramp. Pipeline stages are a sequence, not five identities, so they
+     take an ordinal ramp: one hue, five monotone lightness steps, light at
+     Application and dark at Funded, so the reader sees progress in the colour.
+     Validated: monotone L, adjacent dL >= 0.06, light end 2.32:1 on paper,
+     hue spread 0deg. */
+  --stage-step-1: #91a8ee;
+  --stage-step-2: #708bea;
+  --stage-step-3: #536fe0;
+  --stage-step-4: #3c53cd;
+  --stage-step-5: #2e40a3;
+
+  /* Danger */
+  --red-100: #fde8e8;
+  --red-700: #a12626;
+
+  /* Baseline unit. Every height and gap is a multiple of this. */
+  --baseline: 4px;
+
+  /* Spacing ladder */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+
+  /* Geometry ladder. Hairlines and the flag dot sit below the baseline unit
+     by necessity: a 4px rule is a slab, not a rule. */
+  --size-hairline: 1px;
+  --size-stroke: 2px;
+  --size-dot: 6px;
+  --size-meter: 2px;
+  --size-meter-large: 4px;
+  --size-panel: 360px;
+  --size-finding-min: 288px;
+  --size-control: 240px;
+  --size-table: 1120px;
+  --size-check: 48px;
+  /* WCAG / HIG minimum interactive target. */
+  --size-target: 44px;
+  --size-stat-meter: 120px;
+  /* House icon size: matches the shadcn primitives already in the tree. */
+  --size-icon: 16px;
+  --size-score: 32px;
+  --size-reason: 48px;
+
+  /* Type ladder: ratio 1.2 from a 13px body, 11px floor */
+  --text-xs: 11px;
+  --text-sm: 13px;
+  --text-md: 16px;
+  --text-lg: 19px;
+  --text-xl: 23px;
+
+  --leading-tight: 1.15;
+  --leading-body: 1.4;
+
+  --tracking-flat: 0;
+  --tracking-label: 0.08em;
+
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --radius-1: 2px;
+
+  /* Motion */
+  --duration-exit: 120ms;
+  --duration-enter: 180ms;
+  --duration-settle: 200ms;
+  --duration-blink: 1000ms;
+  --duration-pulse: 1600ms;
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  --family-ui: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --family-mono: 'Geist Mono Variable', ui-monospace, 'SFMono-Regular', monospace;
+}
+
+/* --------------------------------------------------------------------------
+   Tier 2: semantics
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Surfaces */
+  --ground: var(--grey-0);
+  --ground-raised: var(--grey-50);
+  /* Hover needs to be perceivable, not merely present: grey-50 is 3% off the
+     ground and reads as nothing across a 44px row. */
+  --ground-hover: var(--grey-100);
+  --ground-selected: var(--indigo-50);
+  --ground-selected-hover: var(--indigo-100);
+  --ground-inert: var(--grey-100);
+
+  /* Ink */
+  --ink-primary: var(--grey-900);
+  --ink-secondary: var(--grey-700);
+  --ink-muted: var(--grey-500);
+  --ink-inverse: var(--grey-0);
+
+  /* Lines */
+  --rule: var(--grey-200);
+  --rule-strong: var(--grey-300);
+
+  /* Accent. Appears in exactly two places: the selected row marker and the
+     score meter fill. Focus borrows the same hue so the eye learns one blue. */
+  --accent: var(--indigo-600);
+  --accent-strong: var(--indigo-700);
+  /* The meter's unfilled track is a lighter step of the fill's own ramp, so
+     state reads across the whole bar. */
+  --accent-track: var(--indigo-200);
+  --focus: var(--indigo-600);
+
+  /* Stages. One mark colour each, walking the ordinal ramp. The written label
+     beside the mark carries identity, so the colour is free to encode order. */
+  --stage-application-mark: var(--stage-step-1);
+  --stage-processing-mark: var(--stage-step-2);
+  --stage-underwriting-mark: var(--stage-step-3);
+  --stage-closing-mark: var(--stage-step-4);
+  --stage-funded-mark: var(--stage-step-5);
+
+  /* Danger */
+  --danger-bg: var(--red-100);
+  --danger-fg: var(--red-700);
+
+  /* Geometry roles */
+  --border-width: var(--size-hairline);
+  --emphasis-width: var(--size-stroke);
+  --focus-width: var(--size-stroke);
+  --marker-size: var(--size-dot);
+  --meter-height: var(--size-meter);
+  --meter-height-large: var(--size-meter-large);
+
+  /* Measures */
+  --measure-panel: var(--size-panel);
+  --measure-finding: var(--size-finding-min);
+  --measure-control: var(--size-control);
+  --measure-table: var(--size-table);
+  --measure-check: var(--size-check);
+  --measure-score: var(--size-score);
+  --measure-reason: var(--size-reason);
+  --target-min: var(--size-target);
+  --measure-stat-meter: var(--size-stat-meter);
+  --icon-size: var(--size-icon);
+
+  /* Spacing roles. The layout rule is encoded here rather than in the
+     stylesheet: space inside a group is --space-stack or --space-inline, and
+     space between groups is --space-group, two ladder steps larger. */
+  --space-stack-tight: var(--space-1);
+  --space-stack: var(--space-2);
+  --space-inline: var(--space-3);
+  --space-inline-wide: var(--space-4);
+  --space-pair: var(--space-4);
+  --space-group: var(--space-6);
+  --space-section: var(--space-12);
+
+  /* Type roles */
+  --type-label: var(--text-xs);
+  --type-body: var(--text-sm);
+  --type-title: var(--text-md);
+  --type-heading: var(--text-lg);
+  --type-display: var(--text-xl);
+  --weight-body: var(--weight-medium);
+  --weight-figure: var(--weight-semibold);
+  --tracking-body: var(--tracking-flat);
+  --tracking-meta: var(--tracking-label);
+
+  /* Shape role. One radius, on controls and badges only. */
+  --radius-control: var(--radius-1);
+
+  /* Motion roles. Entrances decelerate into place, exits accelerate away. */
+  --motion-enter: var(--ease-out);
+  --motion-exit: var(--ease-in);
+
+  /* Density roles, both on the 4px baseline */
+  --row-height-compact: calc(var(--baseline) * 8);
+  --row-height-comfortable: calc(var(--baseline) * 11);
+  --control-height: calc(var(--baseline) * 8);
+
+  /* Elevation. The only shadow in the system. */
+  --shadow-panel: 0 0 var(--space-6) color-mix(in srgb, var(--grey-900) 16%, transparent);
+
+  /* Type roles */
+  --font-ui: var(--family-ui);
+  --font-numeric: var(--family-mono);
+}
+
+/* --------------------------------------------------------------------------
+   Tier 3: component tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Table */
+  --table-bg: var(--ground);
+  --table-fg: var(--ink-primary);
+  --table-rule: var(--rule);
+  --table-rule-outer: var(--rule-strong);
+  --table-rule-width: var(--border-width);
+
+  --table-header-fg: var(--ink-muted);
+  --table-header-size: var(--type-label);
+  --table-header-tracking: var(--tracking-meta);
+
+  --table-row-bg-hover: var(--ground-hover);
+  --table-row-bg-selected: var(--ground-selected);
+  --table-row-bg-selected-hover: var(--ground-selected-hover);
+  --table-row-marker: var(--accent);
+  --table-row-marker-width: var(--emphasis-width);
+  --table-row-focus: var(--focus);
+  --table-row-focus-width: var(--focus-width);
+  --table-row-height-compact: var(--row-height-compact);
+  --table-row-height-comfortable: var(--row-height-comfortable);
+  --table-cell-pad-compact: var(--space-inline);
+  --table-cell-pad-comfortable: var(--space-inline-wide);
+
+  --table-flag-color: var(--danger-fg);
+  --table-flag-size: var(--marker-size);
+
+  --table-meter-track: var(--accent-track);
+  --table-meter-fill: var(--accent);
+  --table-meter-height: var(--meter-height);
+  --table-finding-fg: var(--ink-secondary);
+  --table-finding-min: var(--measure-finding);
+  --table-check-width: var(--measure-check);
+  --table-score-width: var(--measure-score);
+  --table-state-pad: var(--space-section);
+  --table-search-width: var(--measure-control);
+  --table-head-bg-hover: var(--ground-hover);
+  --table-min-width: var(--measure-table);
+
+  --table-skeleton-bg: var(--ground-inert);
+
+  /* Stage mark. A dot plus a written label, not a filled pill: five pills of
+     tinted colour were the loudest thing on the screen and said nothing the
+     word beside them did not. */
+  --stage-dot-size: var(--marker-size);
+  --stage-gap: var(--space-stack);
+  --stage-label-fg: var(--ink-secondary);
+  --stage-label-size: var(--type-body);
+
+  /* Controls */
+  --control-bg: var(--ground);
+  --control-fg: var(--ink-primary);
+  --control-border: var(--rule-strong);
+  --control-radius: var(--radius-control);
+  --control-placeholder: var(--ink-muted);
+  --control-focus: var(--focus);
+  --control-bg-hover: var(--ground-hover);
+  --control-target: var(--target-min);
+  --control-bg-primary-hover: var(--accent-strong);
+
+  /* Bulk bar */
+  --bulkbar-bg: var(--ground);
+  --bulkbar-fg: var(--ink-primary);
+  --bulkbar-rule: var(--rule-strong);
+  --bulkbar-height: var(--row-height-comfortable);
+  --bulkbar-pad-inline: var(--space-inline-wide);
+  --bulkbar-gap: var(--space-stack);
+
+  /* Detail panel */
+  --panel-width: var(--measure-panel);
+  --panel-bg: var(--ground);
+  --panel-fg: var(--ink-primary);
+  --panel-shadow: var(--shadow-panel);
+  --panel-pad: var(--space-group);
+  --panel-gap: var(--space-group);
+  --panel-label-fg: var(--ink-muted);
+  --panel-meter-height: var(--meter-height-large);
+  --panel-reason-height: var(--measure-reason);
+  --panel-icon-size: var(--icon-size);
+
+  /* Summary bar */
+  --summary-label-fg: var(--ink-muted);
+  --summary-label-size: var(--type-label);
+  --summary-value-fg: var(--ink-primary);
+  --summary-value-size: var(--type-display);
+  --summary-value-weight: var(--weight-figure);
+  --summary-meta-fg: var(--ink-muted);
+  --summary-meta-size: var(--type-label);
+  --summary-gap: var(--space-section);
+  --summary-rule: var(--rule);
+  --summary-meter-track: var(--accent-track);
+  --summary-meter-fill: var(--accent);
+  --summary-meter-height: var(--meter-height);
+  --summary-meter-width: var(--measure-stat-meter);
+  --summary-flag-mark: var(--danger-fg);
+
+  /* State blocks */
+  --state-title-fg: var(--ink-primary);
+  --state-reason-fg: var(--ink-muted);
+  --state-error-fg: var(--danger-fg);
+}

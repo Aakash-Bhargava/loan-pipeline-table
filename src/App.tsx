@@ -3,7 +3,7 @@ import { loans } from '@/data/loans'
 
 export default function App() {
   return (
-    <main>
+    <main className="app-shell">
       <LoanTable loans={loans} />
     </main>
   )

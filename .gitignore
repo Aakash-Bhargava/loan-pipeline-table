@@ -25,3 +25,6 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# Vendored third-party agent skills: kept local, not redistributed
+.agents

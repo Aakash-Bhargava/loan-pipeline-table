@@ -1,0 +1,1036 @@
+/* ==========================================================================
+   Loan pipeline table.
+
+   Every length here is a token, a spacing-ladder step, or an integer multiple
+   of --baseline. Every colour is a component token. These rules are deliberately
+   unlayered so they win over the Tailwind utility layer that the shadcn
+   primitives carry, without !important.
+
+   Motion rule: the file is readable with no motion at all. Transitions that
+   move something live inside @media (prefers-reduced-motion: no-preference);
+   the opacity-only fallback sits outside it.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Shell
+   -------------------------------------------------------------------------- */
+
+.app-shell {
+  /* Generous page margin: the grid is dense, the frame around it should not be. */
+  padding: var(--space-section);
+}
+
+/* With the panel open the whole column of content gives up exactly the panel's
+   width, so nothing ever sits behind it. The table's floor comes down by the
+   same amount, so the flexible Finding column shrinks and ellipsises inside the
+   visible area rather than sliding under the panel. */
+.lt[data-panel-open='true'] {
+  padding-inline-end: var(--panel-width);
+}
+
+.lt[data-panel-open='true'] .lt-table {
+  min-width: calc(var(--table-min-width) - var(--panel-width));
+}
+
+.lt {
+  display: flex;
+  flex-direction: column;
+  /* Kerning is never optional. Ligatures and contextual alternates on. */
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  /* Group separation: two ladder steps above the --space-2 used inside groups. */
+  gap: var(--space-group);
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-body);
+  color: var(--table-fg);
+  background: var(--table-bg);
+}
+
+/* --------------------------------------------------------------------------
+   Summary: a KPI row, and one line of meta under it
+   -------------------------------------------------------------------------- */
+
+.lt-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack);
+  padding-bottom: var(--space-group);
+  border-bottom: var(--border-width) solid var(--summary-rule);
+}
+
+.lt-summary-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--summary-gap);
+  margin: 0;
+}
+
+.lt-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-tight);
+}
+
+.lt-stat-label {
+  color: var(--summary-label-fg);
+  font-family: var(--font-numeric);
+  font-size: var(--summary-label-size);
+  letter-spacing: var(--tracking-meta);
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+}
+
+.lt-stat-value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-stack);
+  margin: 0;
+  color: var(--summary-value-fg);
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--summary-value-size);
+  font-weight: var(--summary-value-weight);
+  line-height: var(--leading-tight);
+}
+
+.lt-stat-meter {
+  display: block;
+  width: var(--summary-meter-width);
+  height: var(--summary-meter-height);
+  background: var(--summary-meter-track);
+}
+
+.lt-stat-meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--summary-meter-fill);
+}
+
+.lt-stat-mark {
+  display: inline-block;
+  flex: none;
+  width: var(--stage-dot-size);
+  height: var(--stage-dot-size);
+  border-radius: 50%;
+  background: var(--summary-flag-mark);
+}
+
+.lt-summary-meta {
+  color: var(--summary-meta-fg);
+  font-family: var(--font-numeric);
+  font-size: var(--summary-meta-size);
+  letter-spacing: var(--tracking-meta);
+  line-height: var(--leading-tight);
+}
+
+.lt-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-stack);
+}
+
+.lt-search {
+  width: var(--table-search-width);
+}
+
+/* The table and its docked bulk bar share one box. */
+.lt-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Controls. Enough reset to pull the shadcn primitives onto the ladder.
+   -------------------------------------------------------------------------- */
+
+.lt-control {
+  height: var(--control-height);
+  padding-inline: var(--space-stack);
+  border: var(--border-width) solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: var(--control-bg);
+  color: var(--control-fg);
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+  line-height: var(--leading-tight);
+  transition: none;
+}
+
+.lt-control::placeholder {
+  color: var(--control-placeholder);
+}
+
+.lt-control:focus-visible,
+.lt-control:focus {
+  outline: var(--focus-width) solid var(--control-focus);
+  outline-offset: calc(var(--focus-width) * -1);
+  border-color: var(--control-border);
+  box-shadow: none;
+}
+
+.lt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-height);
+  padding-inline: var(--space-inline);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--control-radius);
+  background: transparent;
+  color: var(--ink-primary);
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  white-space: nowrap;
+}
+
+.lt-btn:focus-visible,
+.lt-btn:focus {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: calc(var(--focus-width) * -1);
+  box-shadow: none;
+}
+
+.lt-btn:hover:not(:disabled) {
+  background: var(--control-bg-hover);
+}
+
+.lt-btn:disabled {
+  color: var(--ink-muted);
+  cursor: not-allowed;
+}
+
+.lt-btn--primary:disabled {
+  background: var(--ground-inert);
+  color: var(--ink-muted);
+}
+
+.lt-btn--primary {
+  background: var(--accent);
+  color: var(--ink-inverse);
+}
+
+.lt-btn--primary:hover {
+  background: var(--accent);
+}
+
+/* Dismissal, not an action: present but never competing with the primary. */
+.lt-btn--quiet {
+  color: var(--ink-muted);
+}
+
+.lt-btn--quiet:hover:not(:disabled) {
+  color: var(--ink-primary);
+}
+
+.lt-btn--secondary {
+  border-color: var(--rule-strong);
+  background: var(--ground);
+  color: var(--ink-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Table
+   -------------------------------------------------------------------------- */
+
+.lt-table {
+  width: 100%;
+  /* Fixed, so the column widths come from the header and stay put when the
+     skeletons are replaced by real data. */
+  table-layout: fixed;
+  min-width: var(--table-min-width);
+  /* Separate, so a row can carry its own inset focus ring and marker. */
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--table-bg);
+  color: var(--table-fg);
+  font-size: var(--type-body);
+  caption-side: bottom;
+}
+
+/* Density lives on the row and cascades into its cells. */
+.lt-row--compact {
+  --row-height: var(--table-row-height-compact);
+  --cell-pad: var(--table-cell-pad-compact);
+}
+
+.lt-row--comfortable {
+  --row-height: var(--table-row-height-comfortable);
+  --cell-pad: var(--table-cell-pad-comfortable);
+}
+
+.lt-row {
+  height: var(--row-height);
+  background: var(--table-bg);
+  /* Colour only, so nothing here can move the layout. */
+  transition: background-color var(--duration-exit) var(--motion-enter);
+}
+
+.lt-cell,
+.lt-head {
+  height: var(--row-height);
+  padding-block: 0;
+  padding-inline: var(--cell-pad);
+  border-bottom: var(--table-rule-width) solid var(--table-rule);
+  vertical-align: middle;
+  white-space: nowrap;
+  /* Horizontal rules only. No vertical rules anywhere. */
+  border-inline: 0;
+}
+
+/* Outer edges are the only strong rules. */
+.lt-head {
+  border-top: var(--table-rule-width) solid var(--table-rule-outer);
+  color: var(--table-header-fg);
+  font-family: var(--font-numeric);
+  font-size: var(--table-header-size);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--table-header-tracking);
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+  text-align: left;
+  font-feature-settings: 'kern' 1, 'cpsp' 1;
+}
+
+.lt-table tbody tr:last-child > .lt-cell {
+  border-bottom: var(--table-rule-width) solid var(--table-rule-outer);
+}
+
+/* When the bulk bar is docked it supplies the closing rule. Without this the
+   table's outer rule and the bar's top rule stack into a 2px line. */
+.lt-surface:has(.lt-bulkbar) .lt-table tbody tr:last-child > .lt-cell {
+  border-bottom-color: transparent;
+}
+
+/* Column widths. Declared once; fixed layout applies them to every state. */
+.lt-col--check {
+  width: var(--table-check-width);
+}
+
+.lt-col--borrower {
+  width: 17%;
+}
+
+.lt-col--amount {
+  width: 10%;
+}
+
+.lt-col--rate {
+  width: 7%;
+}
+
+.lt-col--stage {
+  width: 11%;
+}
+
+.lt-col--officer {
+  width: 14%;
+}
+
+.lt-col--updatedAt {
+  width: 8%;
+}
+
+.lt-col--score {
+  width: 6%;
+}
+
+/* Left auto on purpose: it absorbs the remainder so the checkbox column holds
+   its exact width. */
+.lt-col--finding {
+  width: auto;
+}
+
+.lt-cell--num {
+  font-family: var(--font-numeric);
+  /* Lining as well as tabular: cap-height digits sit on the row's baseline
+     grid, so a column of amounts reads as one block. */
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'kern' 1, 'tnum' 1, 'lnum' 1;
+  letter-spacing: var(--tracking-body);
+}
+
+.lt-cell--check,
+.lt-head--check {
+  width: var(--table-check-width);
+  padding-inline-end: 0;
+}
+
+.lt-cell--finding,
+.lt-head--finding {
+  min-width: var(--table-finding-min);
+}
+
+/* Row states. Marker and ring are both inset, so no state moves anything.
+   Rows open the detail panel, so they carry the pointer that says so. */
+.lt-row--body {
+  cursor: pointer;
+}
+
+.lt-row--body:hover {
+  background: var(--table-row-bg-hover);
+}
+
+.lt-row--selected {
+  background: var(--table-row-bg-selected);
+  box-shadow: inset var(--table-row-marker-width) 0 0 0 var(--table-row-marker);
+}
+
+/* A selected row still answers the cursor: same hue, one step deeper. */
+.lt-row--selected:hover {
+  background: var(--table-row-bg-selected-hover);
+}
+
+/* The focus ring outranks every other row state and never disappears. */
+.lt-row--body:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 var(--table-row-focus-width) var(--table-row-focus);
+}
+
+.lt-row--selected:focus {
+  box-shadow:
+    inset var(--table-row-marker-width) 0 0 0 var(--table-row-marker),
+    inset 0 0 0 var(--table-row-focus-width) var(--table-row-focus);
+}
+
+/* Header sort control */
+/* The sort target is the whole header cell, not just the words in it. */
+.lt-head:has(.lt-sort):hover {
+  background: var(--table-head-bg-hover);
+}
+
+.lt-sort {
+  cursor: pointer;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--space-stack-tight);
+  /* Fills the cell rather than setting its height: the header carries two
+     rules to the body's one, and a fixed height here would push the header
+     off the density by exactly those 2px. */
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  transition: color var(--duration-exit) var(--motion-enter);
+}
+
+.lt-sort:focus-visible,
+.lt-sort:focus {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* One mono glyph. It is always in the layout so the header cannot shift when
+   the sort moves; it is only *visible* on the sorted column, and hints at low
+   emphasis when you hover a column that is not sorted yet. */
+.lt-sort-glyph {
+  font-family: var(--font-numeric);
+  color: var(--ink-secondary);
+  opacity: 0;
+  transition: opacity var(--duration-exit) var(--motion-enter);
+}
+
+.lt-sort[data-sorted='true'] .lt-sort-glyph {
+  opacity: 1;
+}
+
+.lt-sort:hover {
+  color: var(--ink-primary);
+}
+
+.lt-sort:hover .lt-sort-glyph,
+.lt-sort:focus-visible .lt-sort-glyph {
+  opacity: 1;
+}
+
+/* Flag marker: a dot, never a red row. */
+.lt-borrower {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-stack);
+}
+
+/* The gutter is reserved on every row, flagged or not, so borrower names all
+   begin on the same vertical. An unflagged row holds the space empty. */
+.lt-flag {
+  display: inline-block;
+  flex: none;
+  width: var(--table-flag-size);
+  height: var(--table-flag-size);
+  border-radius: 50%;
+  background: var(--table-flag-color);
+}
+
+.lt-flag[data-flagged='false'] {
+  visibility: hidden;
+}
+
+.lt-id {
+  font-family: var(--font-numeric);
+  font-size: var(--type-label);
+  color: var(--ink-muted);
+}
+
+/* Checkbox. The shadcn primitive ships a 4px radius and renders a tick for the
+   indeterminate state; both are pulled onto the system here. */
+.lt [data-slot='checkbox'] {
+  border-radius: var(--radius-control);
+  border-color: var(--rule-strong);
+}
+
+/* The 16px box is the mark; the target is the row's full height by 44px wide.
+   In comfortable density that is exactly the 44x44 minimum. */
+.lt [data-slot='checkbox']::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  inset: auto;
+  width: var(--control-target);
+  height: var(--row-height);
+  transform: translate(-50%, -50%);
+}
+
+.lt [data-slot='checkbox']:focus-visible,
+.lt [data-slot='checkbox']:focus {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: calc(var(--focus-width) * -1);
+  box-shadow: none;
+}
+
+.lt [data-slot='checkbox'][data-state='indeterminate'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--ink-inverse);
+}
+
+.lt [data-slot='checkbox'][data-state='indeterminate'] svg {
+  display: none;
+}
+
+/* A bar, not a tick: some rows are selected, not all of them. */
+.lt [data-slot='checkbox'][data-state='indeterminate']::before {
+  content: '';
+  position: absolute;
+  width: var(--space-stack);
+  height: var(--border-width);
+  background: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   Stage badge
+   -------------------------------------------------------------------------- */
+
+.lt-badge-slot {
+  display: inline-grid;
+}
+
+/* Both badges occupy one cell so the swap cannot move anything. */
+.lt-badge-slot > * {
+  grid-area: 1 / 1;
+}
+
+.lt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--stage-gap);
+  color: var(--stage-label-fg);
+  font-family: var(--font-ui);
+  font-size: var(--stage-label-size);
+  font-weight: var(--weight-body);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-body);
+  white-space: nowrap;
+}
+
+/* The dot carries the ordinal step; the word carries the identity. Colour is
+   therefore never the only channel. */
+.lt-badge::before {
+  content: '';
+  flex: none;
+  width: var(--stage-dot-size);
+  height: var(--stage-dot-size);
+  border-radius: 50%;
+  background: var(--stage-mark);
+}
+
+.lt-badge--application {
+  --stage-mark: var(--stage-application-mark);
+}
+
+.lt-badge--processing {
+  --stage-mark: var(--stage-processing-mark);
+}
+
+.lt-badge--underwriting {
+  --stage-mark: var(--stage-underwriting-mark);
+}
+
+.lt-badge--closing {
+  --stage-mark: var(--stage-closing-mark);
+}
+
+.lt-badge--funded {
+  --stage-mark: var(--stage-funded-mark);
+}
+
+/* The outgoing badge mounts opaque and dissolves, revealing the incoming one
+   underneath it. @starting-style does the whole crossfade, so no frame flip
+   and no timer decide what it looks like. */
+.lt-badge--outgoing {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-settle) var(--motion-exit);
+}
+
+@starting-style {
+  .lt-badge--outgoing {
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   AI review cell
+   -------------------------------------------------------------------------- */
+
+/* Every column is left aligned. Tabular figures keep digit widths uniform, so
+   equal-length numbers still stack; magnitudes no longer line up by place value,
+   which is the trade this alignment makes. */
+.lt-review-score {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-stack-tight);
+  width: var(--table-score-width);
+  vertical-align: middle;
+  opacity: 1;
+  transition: opacity var(--duration-settle) var(--motion-enter);
+}
+
+/* Held in place while the review streams, so the row never reflows. */
+.lt-review-score[data-status='streaming'] {
+  opacity: 0;
+}
+
+.lt-review-value {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--type-body);
+  line-height: var(--leading-tight);
+}
+
+.lt-meter {
+  display: block;
+  width: 100%;
+  height: var(--table-meter-height);
+  background: var(--table-meter-track);
+}
+
+.lt-meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--table-meter-fill);
+}
+
+/* The text takes what the column leaves and truncates into it; the caret is a
+   sibling that follows the text rather than being pushed to the cell's edge. */
+.lt-finding-line {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.lt-finding {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--table-finding-fg);
+  line-height: var(--leading-body);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lt-caret {
+  flex: none;
+  font-family: var(--font-numeric);
+  color: var(--ink-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Loading, empty, error
+   -------------------------------------------------------------------------- */
+
+.lt-skeleton {
+  display: inline-block;
+  vertical-align: middle;
+  height: var(--type-label);
+  border-radius: 0;
+  background: var(--table-skeleton-bg);
+}
+
+.lt-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-stack);
+  padding-block: var(--table-state-pad);
+  text-align: center;
+  white-space: normal;
+}
+
+.lt-state-title {
+  color: var(--state-title-fg);
+  font-size: var(--type-title);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+}
+
+.lt-state-title--error {
+  color: var(--state-error-fg);
+}
+
+.lt-state-reason {
+  color: var(--state-reason-fg);
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
+}
+
+.lt-state-action {
+  margin-top: var(--space-stack);
+}
+
+/* --------------------------------------------------------------------------
+   Bulk bar
+   -------------------------------------------------------------------------- */
+
+.lt-bulkbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--bulkbar-gap);
+  width: 100%;
+  height: var(--bulkbar-height);
+  padding-inline: var(--bulkbar-pad-inline);
+  border-top: var(--border-width) solid var(--bulkbar-rule);
+  background: var(--bulkbar-bg);
+  color: var(--bulkbar-fg);
+  opacity: 1;
+  transition: opacity var(--duration-enter) var(--motion-enter);
+}
+
+@starting-style {
+  .lt-bulkbar {
+    opacity: 0;
+  }
+}
+
+.lt-bulkbar[data-state='closed'] {
+  opacity: 0;
+  transition: opacity var(--duration-exit) var(--motion-exit);
+}
+
+/* The count replaces itself with no motion at all. */
+.lt-bulkbar-count {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--type-body);
+  margin-inline-end: var(--space-stack);
+}
+
+.lt-bulkbar-end {
+  margin-inline-start: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Detail panel
+   -------------------------------------------------------------------------- */
+
+.lt-panel {
+  position: relative;
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--panel-gap);
+  width: var(--panel-width);
+  max-width: 100%;
+  padding: var(--panel-pad);
+  overflow-y: auto;
+  background: var(--panel-bg);
+  color: var(--panel-fg);
+  box-shadow: var(--panel-shadow);
+  opacity: 1;
+  transition: opacity var(--duration-settle) var(--motion-enter);
+}
+
+@starting-style {
+  .lt-panel {
+    opacity: 0;
+  }
+}
+
+.lt-panel[data-state='closed'] {
+  opacity: 0;
+  transition: opacity var(--duration-exit) var(--motion-exit);
+}
+
+.lt-panel:focus {
+  outline: none;
+}
+
+/* Close control. Escape and the scrim already close the panel; this makes the
+   affordance visible instead of something the user has to know. */
+.lt-panel-close {
+  position: absolute;
+  top: var(--panel-pad);
+  right: var(--panel-pad);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-target);
+  height: var(--control-target);
+  padding: 0;
+  border: 0;
+  border-radius: var(--control-radius);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+/* One icon size across the system; lucide would otherwise render at 24px. */
+.lt-panel-close svg {
+  width: var(--panel-icon-size);
+  height: var(--panel-icon-size);
+}
+
+.lt-panel-close:hover {
+  background: var(--control-bg-hover);
+  color: var(--ink-primary);
+}
+
+.lt-panel-close:focus-visible,
+.lt-panel-close:focus {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* The title must not run under the close control. */
+.lt-panel-head {
+  padding-right: var(--control-target);
+}
+
+.lt-panel-title {
+  font-size: var(--type-heading);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+}
+
+.lt-panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-tight);
+}
+
+/* Two-column metadata, label over value, pairs tight and groups loose. */
+.lt-panel-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-pair);
+  margin: 0;
+}
+
+.lt-panel-pair {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-tight);
+}
+
+.lt-panel-label {
+  color: var(--panel-label-fg);
+  font-family: var(--font-numeric);
+  font-size: var(--type-label);
+  letter-spacing: var(--tracking-meta);
+  line-height: var(--leading-tight);
+  text-transform: uppercase;
+}
+
+.lt-panel-value {
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--type-body);
+  line-height: var(--leading-tight);
+}
+
+.lt-panel-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack);
+}
+
+.lt-panel-score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-stack-tight);
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: var(--type-display);
+  line-height: var(--leading-tight);
+}
+
+.lt-panel-meter {
+  height: var(--panel-meter-height);
+}
+
+.lt-panel-confidence {
+  color: var(--ink-muted);
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+  font-weight: var(--weight-body);
+  letter-spacing: var(--tracking-body);
+}
+
+.lt-panel-finding {
+  color: var(--ink-secondary);
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
+}
+
+.lt-panel-actions {
+  display: flex;
+  gap: var(--space-stack);
+}
+
+.lt-panel-reason {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-stack-tight);
+}
+
+.lt-textarea {
+  min-height: var(--panel-reason-height);
+  padding: var(--space-stack);
+  border: var(--border-width) solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: var(--control-bg);
+  color: var(--control-fg);
+  font-family: var(--font-ui);
+  font-size: var(--type-body);
+  line-height: var(--leading-body);
+  resize: vertical;
+}
+
+.lt-textarea:focus-visible,
+.lt-textarea:focus {
+  outline: var(--focus-width) solid var(--focus);
+  outline-offset: calc(var(--focus-width) * -1);
+}
+
+/* --------------------------------------------------------------------------
+   Motion. Everything above reads correctly with no motion; these blocks add
+   movement only when the reader has not asked for less.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .lt-bulkbar {
+    transform: translateY(0);
+    transition:
+      transform var(--duration-enter) var(--motion-enter),
+      opacity var(--duration-enter) var(--motion-enter);
+  }
+
+  @starting-style {
+    .lt-bulkbar {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  .lt-bulkbar[data-state='closed'] {
+    transform: translateY(100%);
+    opacity: 0;
+    transition:
+      transform var(--duration-exit) var(--motion-exit),
+      opacity var(--duration-exit) var(--motion-exit);
+  }
+
+  .lt-panel {
+    transform: translateX(0);
+    transition:
+      transform var(--duration-settle) var(--motion-enter),
+      opacity var(--duration-settle) var(--motion-enter);
+  }
+
+  @starting-style {
+    .lt-panel {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
+  .lt-panel[data-state='closed'] {
+    transform: translateX(100%);
+    opacity: 0;
+    transition:
+      transform var(--duration-exit) var(--motion-exit),
+      opacity var(--duration-exit) var(--motion-exit);
+  }
+
+  .lt-skeleton {
+    animation: lt-pulse var(--duration-pulse) ease-in-out infinite;
+  }
+
+  .lt-caret {
+    animation: lt-blink var(--duration-blink) step-end infinite;
+  }
+}
+
+@keyframes lt-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes lt-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Touch. The 44px minimum is a finger rule, not a cursor rule: on a coarse
+   pointer the controls grow to it rather than bloating a dense desktop grid.
+   -------------------------------------------------------------------------- */
+
+@media (pointer: coarse) {
+  .lt {
+    --control-height: var(--target-min);
+  }
+
+  .lt-btn,
+  .lt-control {
+    min-height: var(--target-min);
+  }
+}
