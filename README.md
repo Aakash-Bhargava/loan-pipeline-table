@@ -2,13 +2,15 @@
 
 A dense table for the officers and processors who watch a mortgage pipeline all day. It carries stage, officer, money and an AI review per file, and is driven from the keyboard. This repository is the component, its tokens, stories and tests.
 
+App at `/`, Storybook at `/storybook`, both from `pnpm build:vercel`.
+
 ## Decisions
 
 **One ratio, 1.2, from a 13px body.** Sizes close together (11, 13, 16, 19, 23) let a label, a value and a title differ without shouting.
 
 **An 11px floor.** Below it Geist Mono stops being readable at a scan.
 
-**A 4px baseline.** Rows are 32px compact, 44px comfortable, header included, so density never shifts anything.
+**A 4px baseline.** Rows are 32px compact, 44px comfortable, header included.
 
 **Contrast, measured.** `pnpm contrast` resolves the token graph and exits non-zero under threshold.
 
@@ -23,15 +25,17 @@ A dense table for the officers and processors who watch a mortgage pipeline all 
 | `--focus` on ground/selected | 7.04/6.28 | 3 |
 | `--ink-muted` on `--ground-inert`, disabled | 4.13 | 3 |
 
-**The focus ring is inset.** An outline draws outside the box, overlapping the row above and clipping against scroll containers. An inset shadow stays inside the row and costs no layout, so it survives hover and selection at once.
+**The focus ring is inset.** An outline draws outside the box, overlapping the row above and clipping against scroll containers. An inset shadow costs no layout, so it survives hover and selection at once.
 
-**One alignment per column.** Text left, numerals right, header following its column. Score and finding are one review but two alignments, so they are two columns. No vertical rules: alignment and the mono/proportional split separate them already.
+**The panel docks.** It takes its 360px from the table rather than floating over it, so nothing is ever hidden behind it.
 
-**Cool neutrals, muted stages, one accent.** Every grey carries a blue cast, which lets a tinted hover read as intent rather than a smudge. Forty badges should read as a field of stages, not forty alerts. The accent marks selection, fills the meter and carries the primary action, and sits far from the sky and violet stage hues.
+**Everything left aligned.** Symmetry over place value: tabular lining figures keep digit widths uniform, so equal-length numbers still stack, but magnitudes no longer align. No vertical rules.
 
-**Flagged is derived.** Done review, score under 40. A 6px dot in a gutter reserved on every row, so names stay aligned.
+**One hue, OKLCH 270.** The neutrals are that hue at near-zero chroma, the accent is it at full chroma, and the stage ramp walks between. Pipeline stages are a sequence, not five identities, so they take a validated ordinal ramp shown as a dot beside the written word: colour encodes progress, the label carries identity, neither alone.
 
-**One primary action per state.** The bulk bar, empty and error states each carry one filled button. If everything is bold, nothing is.
+**Flagged is derived.** Done review, score under 40. A dot in a gutter reserved on every row, so names stay aligned.
+
+**One primary action per state.** The bulk bar, empty and error states each carry one filled button.
 
 **44px on fingers, 32px on cursors.** The touch minimum is a finger rule, so controls grow to it behind `pointer: coarse`, not everywhere.
 
