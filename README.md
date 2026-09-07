@@ -2,7 +2,7 @@
 
 A dense table for the officers and processors who watch a mortgage pipeline all day. It carries stage, officer, money and an AI review per file, and is driven from the keyboard. This repository is the component, its tokens, stories and tests.
 
-App at `/`, Storybook at `/storybook`, both from `pnpm build:vercel`.
+App at `/`, Storybook at `/storybook` (`pnpm build:vercel`).
 
 ## Decisions
 
