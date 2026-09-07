@@ -306,6 +306,20 @@
   border-bottom-color: transparent;
 }
 
+/* Numbers right, words left. The mapping lives in variants.ts; these are the
+   two classes it hands out. */
+.lt-cell--end,
+.lt-head--end {
+  text-align: right;
+}
+
+/* A right-aligned header hangs its glyph on the inside, so the label stays
+   flush with the digits below it. */
+.lt-head--end .lt-sort {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
 /* Column widths. Declared once; fixed layout applies them to every state. */
 .lt-col--check {
   width: var(--table-check-width);
@@ -602,9 +616,8 @@
    AI review cell
    -------------------------------------------------------------------------- */
 
-/* Every column is left aligned. Tabular figures keep digit widths uniform, so
-   equal-length numbers still stack; magnitudes no longer line up by place value,
-   which is the trade this alignment makes. */
+/* The score is a number, so it sits right with Amount and Rate; the meter under
+   it shares that right edge. */
 .lt-review-score {
   display: inline-flex;
   flex-direction: column;
@@ -626,6 +639,7 @@
   font-variant-numeric: tabular-nums lining-nums;
   font-size: var(--type-body);
   line-height: var(--leading-tight);
+  text-align: right;
 }
 
 .lt-meter {

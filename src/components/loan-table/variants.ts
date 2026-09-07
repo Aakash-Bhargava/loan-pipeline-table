@@ -68,33 +68,58 @@ export const bulkActionBarVariants = cva('lt-bulkbar', {
 
 export type BulkActionBarVariants = VariantProps<typeof bulkActionBarVariants>
 
-/** Table cell alignment, following the column's content. */
+/**
+ * Column vocabulary and the alignment table. Numbers right, words left: the
+ * decision lives here once, so no cell decides its own alignment.
+ */
+export type ColumnKey =
+  | 'borrower'
+  | 'amount'
+  | 'rate'
+  | 'stage'
+  | 'officer'
+  | 'updatedAt'
+  | 'score'
+  | 'finding'
+
+const CELL_ALIGN: Record<ColumnKey, string> = {
+  borrower: '',
+  amount: 'lt-cell--end',
+  rate: 'lt-cell--end',
+  stage: '',
+  officer: '',
+  updatedAt: '',
+  score: 'lt-cell--end',
+  finding: '',
+}
+
+const HEAD_ALIGN: Record<ColumnKey, string> = {
+  borrower: '',
+  amount: 'lt-head--end',
+  rate: 'lt-head--end',
+  stage: '',
+  officer: '',
+  updatedAt: '',
+  score: 'lt-head--end',
+  finding: '',
+}
+
 export const cellVariants = cva('lt-cell', {
   variants: {
-    align: {
-      start: '',
-      end: 'lt-cell--end',
-    },
+    column: CELL_ALIGN,
     numeric: {
       true: 'lt-cell--num',
       false: '',
     },
   },
   defaultVariants: {
-    align: 'start',
     numeric: false,
   },
 })
 
 export const headVariants = cva('lt-head', {
   variants: {
-    align: {
-      start: '',
-      end: 'lt-head--end',
-    },
-  },
-  defaultVariants: {
-    align: 'start',
+    column: HEAD_ALIGN,
   },
 })
 

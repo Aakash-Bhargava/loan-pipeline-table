@@ -34,6 +34,7 @@ import {
   headVariants,
   loanRowVariants,
   resolveRowState,
+  type ColumnKey,
   type Density,
 } from './variants'
 
@@ -52,15 +53,7 @@ export interface LoanTableProps {
   onBulkAction?: (action: BulkAction, loanIds: string[]) => void
 }
 
-type SortKey =
-  | 'borrower'
-  | 'amount'
-  | 'rate'
-  | 'stage'
-  | 'officer'
-  | 'updatedAt'
-  | 'score'
-  | 'finding'
+type SortKey = ColumnKey
 type SortDirection = 'asc' | 'desc'
 
 interface Column {
@@ -342,7 +335,7 @@ export function LoanTable({
                       sorted ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'
                     }
                     className={cn(
-                      headVariants(),
+                      headVariants({ column: column.key }),
                       `lt-col--${column.key}`,
                       column.key === 'finding' && 'lt-head--finding',
                     )}
@@ -382,7 +375,7 @@ export function LoanTable({
                       <TableCell
                         key={column.key}
                         role="gridcell"
-                        className={cellVariants()}
+                        className={cellVariants({ column: column.key })}
                       >
                         <span className="lt-skeleton" style={{ width: column.skeleton }} />
                       </TableCell>
@@ -492,14 +485,14 @@ export function LoanTable({
 
                       <TableCell
                         role="gridcell"
-                        className={cellVariants({ numeric: true })}
+                        className={cellVariants({ column: 'amount', numeric: true })}
                       >
                         {formatAmount(loan.amount)}
                       </TableCell>
 
                       <TableCell
                         role="gridcell"
-                        className={cellVariants({ numeric: true })}
+                        className={cellVariants({ column: 'rate', numeric: true })}
                       >
                         {formatRate(loan.rate)}
                       </TableCell>
@@ -514,14 +507,14 @@ export function LoanTable({
 
                       <TableCell
                         role="gridcell"
-                        className={cellVariants({ numeric: true })}
+                        className={cellVariants({ column: 'updatedAt', numeric: true })}
                       >
                         <time dateTime={loan.updatedAt}>{formatUpdatedAt(loan.updatedAt)}</time>
                       </TableCell>
 
                       <TableCell
                         role="gridcell"
-                        className={cellVariants()}
+                        className={cellVariants({ column: 'score', numeric: true })}
                         data-streaming={streaming ? '' : undefined}
                       >
                         <span
@@ -536,7 +529,7 @@ export function LoanTable({
 
                       <TableCell
                         role="gridcell"
-                        className={cn(cellVariants(), 'lt-cell--finding')}
+                        className={cn(cellVariants({ column: 'finding' }), 'lt-cell--finding')}
                         data-streaming={streaming ? '' : undefined}
                       >
                         <span className="lt-finding-line">

@@ -1,6 +1,8 @@
 # Loan pipeline table
 
-A dense table for the officers and processors who watch a mortgage pipeline all day. It carries stage, officer, money and an AI review per file, and is driven from the keyboard. This repository is the component, its tokens, stories and tests.
+![Loan pipeline table with three rows selected, bulk bar visible, focus on a fourth row](public/screenshot.png)
+
+A dense table for the officers and processors who watch a mortgage pipeline all day. It carries stage, officer, money and an AI review per file, and is driven from the keyboard.
 
 App at `/`, Storybook at `/storybook` (`pnpm build:vercel`).
 
@@ -8,11 +10,11 @@ App at `/`, Storybook at `/storybook` (`pnpm build:vercel`).
 
 **One ratio, 1.2, from a 13px body.** Sizes close together (11, 13, 16, 19, 23) let a label, a value and a title differ without shouting.
 
-**An 11px floor.** Below it Geist Mono stops being readable at a scan.
+**An 11px floor.** Below it Geist Mono stops being readable.
 
 **A 4px baseline.** Rows are 32px compact, 44px comfortable, header included.
 
-**Contrast, measured.** `pnpm contrast` resolves the token graph and exits non-zero under threshold.
+**Contrast, measured.** `pnpm contrast` resolves the token graph, exiting non-zero under threshold.
 
 | Pair | Ratio | Min |
 | --- | --- | --- |
@@ -29,19 +31,19 @@ App at `/`, Storybook at `/storybook` (`pnpm build:vercel`).
 
 **The panel docks.** It takes its 360px from the table rather than floating over it, so nothing is ever hidden behind it.
 
-**Everything left aligned.** Symmetry over place value: tabular lining figures keep digit widths uniform, so equal-length numbers still stack, but magnitudes no longer align. No vertical rules.
+**Numbers right, words left.** Magnitudes stack and names scan. Tabular figures on every number. No vertical rules.
 
-**One hue, OKLCH 270.** The neutrals are that hue at near-zero chroma, the accent is it at full chroma, and the stage ramp walks between. Pipeline stages are a sequence, not five identities, so they take a validated ordinal ramp shown as a dot beside the written word: colour encodes progress, the label carries identity, neither alone.
+**One hue, OKLCH 270.** Neutrals at near-zero chroma, accent at full chroma, stage ramp between. Pipeline stages are a sequence, not five identities, so they take a validated ordinal ramp shown as a dot beside the written word: colour encodes progress, the label carries identity, neither alone. The dot is decorative and the written word carries the meaning, so the light end of the ramp is not held to text contrast.
 
 **Flagged is derived.** Done review, score under 40. A dot in a gutter reserved on every row, so names stay aligned.
 
 **One primary action per state.** The bulk bar, empty and error states each carry one filled button.
 
-**44px on fingers, 32px on cursors.** The touch minimum is a finger rule, so controls grow to it behind `pointer: coarse`, not everywhere.
+**44px on fingers, 32px on cursors.** A finger rule, so controls grow to it behind `pointer: coarse`, not everywhere.
 
-**Keyboard.** Arrows move focus. Space toggles selection. Shift with an arrow extends. Enter opens the panel. Escape closes it, or clears the selection. Focus stays separate from selection; one row is tabbable.
+**Keyboard.** Arrows move focus, Space toggles selection, Shift with an arrow extends, Enter opens the panel, Escape closes it or clears the selection. Focus stays separate from selection; one row is tabbable.
 
-**Motion.** Entrances decelerate, exits accelerate. Every transform sits behind `prefers-reduced-motion: no-preference`; under `reduce` things fade and loops stop.
+**Motion.** Entrances decelerate, exits accelerate. Transforms sit behind `prefers-reduced-motion: no-preference`; under `reduce` things fade and loops stop.
 
 ## Running
 
